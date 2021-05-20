@@ -19,6 +19,7 @@
 namespace OxidAcademy\FeeFreePayments\Tests\Unit\Model;
 
 use DateTime;
+use Mockery;
 use OxidEsales\Eshop\Application\Model\Basket;
 use OxidEsales\Eshop\Application\Model\Payment;
 use OxidEsales\Eshop\Application\Model\PaymentList;
@@ -26,6 +27,7 @@ use OxidEsales\Eshop\Application\Model\User;
 use OxidEsales\Eshop\Core\DatabaseProvider;
 use OxidEsales\Eshop\Core\Field;
 use OxidEsales\Eshop\Core\Model\BaseModel;
+use OxidEsales\Eshop\Core\Price;
 use OxidEsales\Eshop\Core\Registry;
 use OxidEsales\EshopCommunity\Application\Model\Payment as ModelPayment;
 use OxidEsales\TestingLibrary\UnitTestCase;
@@ -61,7 +63,7 @@ class PaymentListTest extends UnitTestCase
 
     public function testGetPaymentListFiltersOnlyPaymentsWithFees() {
         $sAdminId = '48094d07a9a6046470e8f7cb727bc921';
-        $sShipSetId = 'test_deliveryset';
+        $sShipSetId = 'PayPal';
         $sArticleId = 'test_article';
 
         $oUser = oxNew(User::class);
@@ -74,9 +76,9 @@ class PaymentListTest extends UnitTestCase
         $oBasket->calculateBasket();
 
         $oPaymentList = oxNew(PaymentList::class);
-        $paymentList = $oPaymentList->getFreePaymentList($sShipSetId, 1000, $oUser);
+        $paymentList = $oPaymentList->getPaymentList($sShipSetId, 1000, $oUser);
 
-        $this->assertCount(0, $paymentList);
+        $this->assertCount(2, $paymentList);
     }
 
     public function testTrue() {
@@ -89,6 +91,7 @@ class PaymentListTest extends UnitTestCase
         $oPaymentList = oxNew(PaymentList::class);
         $this->assertFalse($oPaymentList->isAFloat('asdf'));
         $this->assertTrue($oPaymentList->isAFloat(100.00));
+        $this->assertFalse($oPaymentList->isAFloat(100));
     }
 
     /** @test */

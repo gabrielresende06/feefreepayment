@@ -28,12 +28,15 @@ use OxidEsales\Eshop\Application\Model\Payment;
 class PaymentList extends PaymentList_parent
 {
 
+    public function getPaymentList($shipSetId, $price, $user) {
+        return $this->getFreePaymentList($shipSetId, $price, $user);
+    }
+
     public function getFreePaymentList($shipSetId, $price, $user = null)
     {
         $paymentList = parent::getPaymentList($shipSetId, $price, $user);
         $basket = $this->getSession()->getBasket();
 
-    
         foreach ($paymentList as $paymentId => $payment) {
             $payment->calculate($basket);
             $paymentPrice = $payment->getPrice();
@@ -56,5 +59,14 @@ class PaymentList extends PaymentList_parent
 
     public function getDateAsString(DateTime $date, $format = 'Y-m-d H:i:s') {
         return $date->format($format);
+    }
+
+    public function getSomeList() 
+    {
+        return [
+            'a',
+            'b',
+            'c',
+        ];
     }
 }
